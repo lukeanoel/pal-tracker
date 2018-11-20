@@ -1,27 +1,20 @@
 package io.pivotal.pal.tracker;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.lang.annotation.Annotation;
-import java.sql.*;
-import java.time.LocalDate;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Optional;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
-@Repository
 public class JdbcTimeEntryRepository implements TimeEntryRepository {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public JdbcTimeEntryRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -50,10 +43,11 @@ public class JdbcTimeEntryRepository implements TimeEntryRepository {
     }
 
     @Override
-    public TimeEntry find(long id) {
+    public TimeEntry find(Long id) {
         return jdbcTemplate.query(
                 "SELECT id, project_id, user_id, date, hours FROM time_entries WHERE id = ?",
-                new Object[]{id}, extractor);
+                new Object[]{id},
+                extractor);
     }
 
     @Override
@@ -62,32 +56,22 @@ public class JdbcTimeEntryRepository implements TimeEntryRepository {
     }
 
     @Override
-    public TimeEntry update(long id, TimeEntry timeEntry) {
-        jdbcTemplate.update("UPDATE time_entries SET project_id = ?, user_id = ?, date = ?, hours = ? " +
-                "where id = ?", timeEntry.getProjectId(), timeEntry.getUserId(), timeEntry.getDate(), timeEntry.getHours(),
-        id);
+    public TimeEntry update(Long id, TimeEntry timeEntry) {
+        jdbcTemplate.update("UPDATE time_entries " +
+                        "SET project_id = ?, user_id = ?, date = ?,  hours = ? " +
+                        "WHERE id = ?",
+                timeEntry.getProjectId(),
+                timeEntry.getUserId(),
+                Date.valueOf(timeEntry.getDate()),
+                timeEntry.getHours(),
+                id);
 
         return find(id);
     }
 
     @Override
-    public void delete(long timeEntryId) {
-        jdbcTemplate.update("DELETE FROM time_entries where id = ?", timeEntryId);
-    }
-
-    @Override
-    public String value() {
-        return null;
-    }
-
-    @Override
-    public Class<? extends Annotation> annotationType() {
-        return null;
-    }
-
-    @Override
-    public List<TimeEntry> findAll() {
-        return null;
+    public void delete(Long id) {
+        jdbcTemplate.update("DELETE FROM time_entries WHERE id = ?", id);
     }
 
     private final RowMapper<TimeEntry> mapper = (rs, rowNum) -> new TimeEntry(
