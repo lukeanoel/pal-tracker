@@ -32,8 +32,8 @@ jobs:
         - echo "Deploying $RELEASE_TAG to Cloud Foundry"
       deploy:
         provider: cloudfoundry
-        api: api.sys.evans.pal.pivotal.io
-        username: luke.a.noel@raytheon.com
-        password: 3c8u9hss
-        organization: luke.a.noel@raytheon.com
-        space: sandbox
+        api: $CF_API_URL
+        username: $CF_USERNAME
+        password: $CF_PASSWORD
+        organization: $CF_ORG
+        space: $CF_SPACE
