@@ -2,8 +2,10 @@ package io.pivotal.pal.tracker;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 import javax.swing.*;
+import java.io.Serializable;
 
 @SpringBootApplication
 public class PalTrackerApplication {
@@ -11,4 +13,10 @@ public class PalTrackerApplication {
     public static void main(String... args) {
         SpringApplication.run(PalTrackerApplication.class, args);
     }
+
+    @Bean
+    public static Serializable getTimeEntryRepository() {
+        return TimeEntryRepository.class;
+    }
+
 }
