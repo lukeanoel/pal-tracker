@@ -4,7 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import javax.sql.DataSource;
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.io.Serializable;
 
 @SpringBootApplication
@@ -14,9 +16,12 @@ public class PalTrackerApplication {
         SpringApplication.run(PalTrackerApplication.class, args);
     }
 
+    @Data
+    DataSource dataSource;
+
     @Bean
-    public static Serializable getTimeEntryRepository() {
-        return TimeEntryRepository.class;
+    public static Serializable getJdbcTimeEntryRepository() {
+        return JdbcTimeEntryRepository.class;
     }
 
 }
